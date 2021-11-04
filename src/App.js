@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
 import Navbar from './Navbar';
@@ -7,7 +7,6 @@ import CountriesList from './CountriesList';
 import CountryDetails from './CountryDetails';
 import countries from './countries.json';
 import axios from 'axios';
-
 
 class App extends Component {
   constructor(props) {
@@ -17,31 +16,42 @@ class App extends Component {
   }
 
   componentDidMount() {
-    axios.get("https://restcountries.com/v3.1/all")
-    .then(response => {
-      this.setState({countries: response.data})
-  })
+    axios.get('https://restcountries.com/v3.1/all').then((response) => {
+      this.setState({ countries: response.data });
+    });
   }
   render() {
-    if (!this.state.countries) return <div>loading</div>
+    if (!this.state.countries) return <div>loading</div>;
     return (
-    <div className="App">
-      <Navbar/>
-      <div class="container">
-      <div class="row">
-      <div class="col-5" >
-      <CountriesList countries = {this.state.countries}/>
+      <div className="App">
+        <Navbar />
+        <div class="container">
+          <div class="row">
+            <div class="col-5">
+              <CountriesList countries={this.state.countries} />
+            </div>
+            <div class="col-7">
+              <Switch>
+                <Route
+                  path="/:cca3"
+                  style={{ height: '90vh', overflow: 'scroll' }}
+                  render={(props) => {
+                    console.log(props, 'props in app');
+                    return (
+                      <CountryDetails
+                        {...props}
+                        countries={this.state.countries}
+                      />
+                    );
+                  }}
+                />
+              </Switch>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-7">
-      <Switch>
-      <Route path="/:cca3" component={CountryDetails} style={{height: "90vh", overflow: "scroll"}} />
-      </Switch>
-      </div>
-      </div>
-    </div>
-    </div>
-  );
-}
+    );
+  }
 }
 
 export default App;
